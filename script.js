@@ -263,6 +263,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
                 }]
             };
+
+            currentChart = new Chart(ctx, {
+                type: 'pie',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Distribución por Continentes (Total: ${total.toLocaleString()})`,
+                            font: { size: 18 }
+                        }
+                    }
+                }
+            });
         } else {
             const continentData = selectedYear === 'total' ? 
                 countriesByContinent[viewType] : 
@@ -284,38 +300,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     )
                 }]
             };
-        }
 
-        currentChart = new Chart(ctx, {
-            type: 'pie',
-            data: chartData,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        right: 200 // Add padding to prevent legend overlap
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'right',
-                        align: 'center',
-                        labels: {
-                            font: { size: 12 },
-                            boxWidth: 15,
-                            padding: 15
+            currentChart = new Chart(ctx, {
+                type: 'pie',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: [
+                                `Distribución de Inmigrantes en ${viewType}`,
+                                selectedYear === 'total' ? '(Hasta Ahora)' : `(${selectedYear})`,
+                                `Total: ${continentTotal.toLocaleString()}`
+                            ].join(' '),
+                            font: { size: 18 }
                         }
-                    },
-                    title: {
-                        display: true,
-                        text: viewType === 'Continentes' ? 'Distribución por Continentes' : 
-                            `Distribución de Inmigrantes en ${viewType} en ${selectedYear}`,
-                        font: { size: 18 }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     // Function to update table
