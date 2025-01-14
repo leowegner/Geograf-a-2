@@ -50,8 +50,139 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // Yearly data
+    const yearlyData = {
+        '2015': {
+            'Europa': {
+                countries: ['Alemania', 'Austria', 'Bélgica', 'Bulgaria', 'Francia', 'Irlanda', 'Italia', 'Países Bajos', 'Polonia', 'Rumanía', 'Reino Unido'],
+                values: [1806, 147, 422, 248, 654, 177, 6768, 308, 389, 505, 2182]
+            },
+            'África': {
+                countries: ['Camerún', 'Marruecos', 'Mauritania', 'Senegal'],
+                values: [0, 688, 199, 142]
+            },
+            'América': {
+                countries: ['Argentina', 'Brasil', 'Colombia', 'Cuba', 'Venezuela'],
+                values: [368, 193, 432, 2195, 3189]
+            },
+            'Asia': {
+                countries: ['China', 'India'],
+                values: [314, 173]
+            }
+        },
+        '2016': {
+            'Europa': {
+                countries: ['Alemania', 'Austria', 'Bélgica', 'Bulgaria', 'Francia', 'Irlanda', 'Italia', 'Países Bajos', 'Polonia', 'Rumanía', 'Reino Unido'],
+                values: [2289, 180, 462, 238, 702, 259, 7208, 364, 476, 586, 2579]
+            },
+            'África': {
+                countries: ['Camerún', 'Marruecos', 'Mauritania', 'Senegal'],
+                values: [4, 759, 162, 263]
+            },
+            'América': {
+                countries: ['Argentina', 'Brasil', 'Colombia', 'Cuba', 'Venezuela'],
+                values: [530, 288, 1555, 2549, 5637]
+            },
+            'Asia': {
+                countries: ['China', 'India'],
+                values: [397, 204]
+            }
+        },
+        '2017': {
+            'Europa': {
+                countries: ['Alemania', 'Austria', 'Bélgica', 'Bulgaria', 'Francia', 'Irlanda', 'Italia', 'Países Bajos', 'Polonia', 'Rumanía', 'Reino Unido'],
+                values: [2567, 185, 513, 248, 775, 256, 6693, 330, 592, 614, 2580]
+            },
+            'África': {
+                countries: ['Camerún', 'Marruecos', 'Mauritania', 'Senegal'],
+                values: [4, 967, 171, 138]
+            },
+            'América': {
+                countries: ['Argentina', 'Brasil', 'Colombia', 'Cuba', 'Venezuela'],
+                values: [713, 280, 2205, 3189, 7916]
+            },
+            'Asia': {
+                countries: ['China', 'India'],
+                values: [379, 186]
+            }
+        },
+        '2018': {
+            'Europa': {
+                countries: ['Alemania', 'Austria', 'Bélgica', 'Bulgaria', 'Francia', 'Irlanda', 'Italia', 'Países Bajos', 'Polonia', 'Rumanía', 'Reino Unido'],
+                values: [2607, 142, 469, 166, 782, 361, 6140, 367, 719, 707, 3070]
+            },
+            'África': {
+                countries: ['Camerún', 'Marruecos', 'Mauritania', 'Senegal'],
+                values: [2, 1322, 248, 216]
+            },
+            'América': {
+                countries: ['Argentina', 'Brasil', 'Colombia', 'Cuba', 'Venezuela'],
+                values: [833, 304, 3351, 4174, 10063]
+            },
+            'Asia': {
+                countries: ['China', 'India'],
+                values: [395, 257]
+            }
+        },
+        '2019': {
+            'Europa': {
+                countries: ['Alemania', 'Austria', 'Bélgica', 'Bulgaria', 'Francia', 'Irlanda', 'Italia', 'Países Bajos', 'Polonia', 'Rumanía', 'Reino Unido'],
+                values: [2461, 170, 458, 188, 830, 280, 5171, 367, 539, 540, 3200]
+            },
+            'África': {
+                countries: ['Camerún', 'Marruecos', 'Mauritania', 'Senegal'],
+                values: [11, 1717, 291, 207]
+            },
+            'América': {
+                countries: ['Argentina', 'Brasil', 'Colombia', 'Cuba', 'Venezuela'],
+                values: [1153, 279, 4133, 4369, 8623]
+            },
+            'Asia': {
+                countries: ['China', 'India'],
+                values: [342, 292]
+            }
+        },
+        '2020': {
+            'Europa': {
+                countries: ['Alemania', 'Austria', 'Bélgica', 'Bulgaria', 'Francia', 'Irlanda', 'Italia', 'Países Bajos', 'Polonia', 'Rumanía', 'Reino Unido'],
+                values: [1813, 116, 340, 91, 600, 236, 2690, 237, 412, 254, 3875]
+            },
+            'África': {
+                countries: ['Camerún', 'Marruecos', 'Mauritania', 'Senegal'],
+                values: [11, 902, 183, 170]
+            },
+            'América': {
+                countries: ['Argentina', 'Brasil', 'Colombia', 'Cuba', 'Venezuela'],
+                values: [541, 112, 2016, 1587, 2305]
+            },
+            'Asia': {
+                countries: ['China', 'India'],
+                values: [91, 122]
+            }
+        },
+        '2021': {
+            'Europa': {
+                countries: ['Alemania', 'Austria', 'Bélgica', 'Bulgaria', 'Francia', 'Irlanda', 'Italia', 'Países Bajos', 'Polonia', 'Rumanía', 'Reino Unido'],
+                values: [2877, 203, 465, 68, 865, 447, 3449, 294, 659, 312, 2302]
+            },
+            'África': {
+                countries: ['Camerún', 'Marruecos', 'Mauritania', 'Senegal'],
+                values: [8, 1407, 479, 473]
+            },
+            'América': {
+                countries: ['Argentina', 'Brasil', 'Colombia', 'Cuba', 'Venezuela'],
+                values: [801, 116, 1829, 3091, 2662]
+            },
+            'Asia': {
+                countries: ['China', 'India'],
+                values: [94, 90]
+            }
+        }
+    };
+
     let currentChart = null;
     let currentView = 'Continentes';
+    let selectedYear = 'total';
 
     // Function to get top N items
     function getTopN(data, n) {
@@ -67,6 +198,25 @@ document.addEventListener('DOMContentLoaded', function() {
             countries: sortedIndices.map(i => data.countries[i]),
             values: sortedIndices.map(i => data.values[i])
         };
+    }
+
+    // Function to combine all years data
+    function getAllYearsData() {
+        const combinedData = {};
+        Object.values(yearlyData).forEach(yearData => {
+            Object.entries(yearData).forEach(([continent, data]) => {
+                if (!combinedData[continent]) {
+                    combinedData[continent] = {
+                        countries: data.countries,
+                        values: new Array(data.values.length).fill(0)
+                    };
+                }
+                data.values.forEach((value, index) => {
+                    combinedData[continent].values[index] += value;
+                });
+            });
+        });
+        return combinedData;
     }
 
     // Function to create or update chart
@@ -92,12 +242,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let chartData;
         if (viewType === 'Continentes') {
-            const continentValues = Object.values(countriesByContinent).map(continent => 
-                continent.values.reduce((a, b) => a + b, 0)
-            );
+            const continentValues = ['Europa', 'África', 'América', 'Asia'].map(continent => {
+                const data = selectedYear === 'total' ? 
+                    countriesByContinent[continent] : 
+                    yearlyData[selectedYear][continent];
+                return data.values.reduce((a, b) => a + b, 0);
+            });
+
             const total = continentValues.reduce((a, b) => a + b, 0);
             const percentages = continentValues.map(value => ((value / total) * 100).toFixed(1));
-            const labels = Object.keys(countriesByContinent).map((continent, i) => 
+
+            const labels = ['Europa', 'África', 'América', 'Asia'].map((continent, i) => 
                 `${continent} (${continentValues[i].toLocaleString()} - ${percentages[i]}%)`
             );
             
@@ -109,7 +264,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }]
             };
         } else {
-            const continentData = countriesByContinent[viewType];
+            const continentData = selectedYear === 'total' ? 
+                countriesByContinent[viewType] : 
+                yearlyData[selectedYear][viewType];
             const filteredData = getTopN(continentData, topN);
             const total = filteredData.values.reduce((a, b) => a + b, 0);
             const continentTotal = continentData.values.reduce((a, b) => a + b, 0);
@@ -153,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: {
                         display: true,
                         text: viewType === 'Continentes' ? 'Distribución por Continentes' : 
-                            `Distribución de Inmigrantes en ${viewType}`,
+                            `Distribución de Inmigrantes en ${viewType} en ${selectedYear}`,
                         font: { size: 18 }
                     }
                 }
@@ -165,20 +322,24 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateTable() {
         const tbody = document.querySelector('#dataTable tbody');
         const searchTerm = document.getElementById('tableSearch').value.toLowerCase();
-        const total = Object.values(countriesByContinent)
-            .reduce((sum, continent) => sum + continent.values.reduce((a, b) => a + b, 0), 0);
+        const data = selectedYear === 'total' ? countriesByContinent : yearlyData[selectedYear];
+        const total = Object.values(data).reduce((sum, continent) => 
+            sum + continent.values.reduce((a, b) => a + b, 0), 0);
         
         tbody.innerHTML = '';
         
-        Object.entries(countriesByContinent).forEach(([continent, data]) => {
+        Object.entries(data).forEach(([continent, data]) => {
             data.countries.forEach((country, index) => {
                 if (country.toLowerCase().includes(searchTerm)) {
                     const row = document.createElement('tr');
+                    const value = data.values[index];
+                    const percentage = ((value / total) * 100).toFixed(1);
+                    
                     row.innerHTML = `
-                        <td>${country}</td>
                         <td>${continent}</td>
-                        <td>${data.values[index].toLocaleString()}</td>
-                        <td>${((data.values[index] / total) * 100).toFixed(2)}%</td>
+                        <td>${country}</td>
+                        <td>${value.toLocaleString()}</td>
+                        <td>${percentage}%</td>
                     `;
                     tbody.appendChild(row);
                 }
@@ -193,12 +354,29 @@ document.addEventListener('DOMContentLoaded', function() {
             viewButtons.forEach(b => b.classList.remove('active'));
             button.classList.add('active');
             currentView = button.textContent;
-            if (currentView === 'Tabla Completa') {
-                updateChart('Tabla');
-            } else {
-                updateChart(currentView, document.getElementById('topFilter').value);
-            }
+            updateChart(currentView, document.getElementById('topFilter').value);
         });
+    });
+
+    // Add year selector
+    const yearSelector = document.createElement('div');
+    yearSelector.className = 'year-controls';
+    yearSelector.innerHTML = `
+        <label for="year-select">Año:</label>
+        <select id="year-select">
+            <option value="total">Hasta Ahora</option>
+            ${Object.keys(yearlyData).reverse().map(year => 
+                `<option value="${year}">${year}</option>`
+            ).join('')}
+        </select>
+    `;
+    document.querySelector('.controls').appendChild(yearSelector);
+
+    // Year selection event listener
+    document.getElementById('year-select').addEventListener('change', function(e) {
+        selectedYear = e.target.value;
+        updateChart(currentView, document.getElementById('topFilter').value);
+        updateTable();
     });
 
     // Initialize filter
@@ -214,5 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
     tableSearch.addEventListener('input', updateTable);
 
     // Initial chart
+    document.getElementById('year-select').value = 'total';
     updateChart('Continentes');
+    updateTable();
 });
