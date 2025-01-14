@@ -112,7 +112,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const continentData = countriesByContinent[viewType];
             const filteredData = getTopN(continentData, topN);
             const total = filteredData.values.reduce((a, b) => a + b, 0);
-            const percentages = filteredData.values.map(value => ((value / total) * 100).toFixed(1));
+            const continentTotal = continentData.values.reduce((a, b) => a + b, 0);
+            const percentages = filteredData.values.map(value => ((value / continentTotal) * 100).toFixed(1));
             const labels = filteredData.countries.map((country, i) => 
                 `${country} (${filteredData.values[i].toLocaleString()} - ${percentages[i]}%)`
             );
