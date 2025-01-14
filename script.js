@@ -238,6 +238,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 value: data.values.reduce((a, b) => a + b, 0)
             }));
 
+            const total = continentData.reduce((sum, item) => sum + item.value, 0);
+
             chartData = {
                 labels: continentData.map(d => d.continent),
                 datasets: [{
@@ -263,6 +265,15 @@ document.addEventListener('DOMContentLoaded', function() {
                                 size: 14
                             }
                         }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${context.label}: ${value.toLocaleString()} (${percentage}%)`;
+                            }
+                        }
                     }
                 }
             };
@@ -281,6 +292,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 country,
                 value: continentData.values[index]
             }));
+
+            // Calculate total for the entire continent (before applying top N filter)
+            const continentTotal = continentData.values.reduce((a, b) => a + b, 0);
 
             // Sort by value in descending order
             countriesData.sort((a, b) => b.value - a.value);
@@ -318,6 +332,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         labels: {
                             font: {
                                 size: 14
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                const percentage = ((value / continentTotal) * 100).toFixed(1);
+                                return `${context.label}: ${value.toLocaleString()} (${percentage}%)`;
                             }
                         }
                     }
