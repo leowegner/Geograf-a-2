@@ -241,7 +241,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const total = continentData.reduce((sum, item) => sum + item.value, 0);
 
             chartData = {
-                labels: continentData.map(d => d.continent),
+                labels: continentData.map(d => {
+                    const percentage = ((d.value / total) * 100).toFixed(1);
+                    return `${d.continent}: ${d.value.toLocaleString()} (${percentage}%)`;
+                }),
                 datasets: [{
                     data: continentData.map(d => d.value),
                     backgroundColor: [
@@ -263,7 +266,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         labels: {
                             font: {
                                 size: 14
-                            }
+                            },
+                            padding: 20
                         }
                     },
                     tooltip: {
@@ -305,7 +309,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             chartData = {
-                labels: countriesData.map(d => d.country),
+                labels: countriesData.map(d => {
+                    const percentage = ((d.value / continentTotal) * 100).toFixed(1);
+                    return `${d.country}: ${d.value.toLocaleString()} (${percentage}%)`;
+                }),
                 datasets: [{
                     data: countriesData.map(d => d.value),
                     backgroundColor: [
@@ -332,7 +339,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         labels: {
                             font: {
                                 size: 14
-                            }
+                            },
+                            padding: 20
                         }
                     },
                     tooltip: {
