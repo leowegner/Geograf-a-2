@@ -92,20 +92,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let chartData;
         if (viewType === 'Continentes') {
+            const continentValues = Object.values(countriesByContinent).map(continent => 
+                continent.values.reduce((a, b) => a + b, 0)
+            );
+            const total = continentValues.reduce((a, b) => a + b, 0);
+            const percentages = continentValues.map(value => ((value / total) * 100).toFixed(1));
+            const labels = Object.keys(countriesByContinent).map((continent, i) => 
+                `${continent} (${continentValues[i].toLocaleString()} - ${percentages[i]}%)`
+            );
+            
             chartData = {
-                labels: Object.keys(countriesByContinent),
+                labels: labels,
                 datasets: [{
-                    data: Object.values(countriesByContinent).map(continent => 
-                        continent.values.reduce((a, b) => a + b, 0)
-                    ),
+                    data: continentValues,
                     backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
                 }]
             };
         } else {
             const continentData = countriesByContinent[viewType];
             const filteredData = getTopN(continentData, topN);
+            const total = filteredData.values.reduce((a, b) => a + b, 0);
+            const percentages = filteredData.values.map(value => ((value / total) * 100).toFixed(1));
+            const labels = filteredData.countries.map((country, i) => 
+                `${country} (${filteredData.values[i].toLocaleString()} - ${percentages[i]}%)`
+            );
+
             chartData = {
-                labels: filteredData.countries,
+                labels: labels,
                 datasets: [{
                     data: filteredData.values,
                     backgroundColor: filteredData.countries.map(() => 
