@@ -393,16 +393,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const tbody = document.querySelector('#dataTable tbody');
         const searchTerm = document.getElementById('tableSearch').value.toLowerCase();
         const data = selectedYear === 'total' ? countriesByContinent : yearlyData[selectedYear];
+        const selectedContinent = document.getElementById('tableContinentSelect').value;
         const total = Object.values(data).reduce((sum, continent) => 
             sum + continent.values.reduce((a, b) => a + b, 0), 0);
         
         // Convert data to array format for easier sorting
         let tableData = [];
+        
         Object.entries(data).forEach(([continent, data]) => {
+            // Skip if a specific continent is selected and this isn't it
+            if (selectedContinent !== 'todos' && continent !== selectedContinent) {
+                return;
+            }
+
             data.countries.forEach((country, index) => {
                 if (country.toLowerCase().includes(searchTerm)) {
                     const value = data.values[index];
                     const percentage = ((value / total) * 100).toFixed(1);
+                    
                     tableData.push({
                         pais: country,
                         continente: continent,
@@ -519,6 +527,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('yearSelect').value = selectedYear;
         updateTable();
     });
+
+    // Initialize continent filter
+    document.getElementById('tableContinentSelect').addEventListener('change', updateTable);
 
     // Initialize filter control
     document.getElementById('topFilter').addEventListener('change', (e) => {
