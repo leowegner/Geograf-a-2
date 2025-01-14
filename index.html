@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas de Inmigración</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Estadísticas de Inmigración</h1>
+        <div class="controls">
+            <div class="view-controls">
+                <button id="viewContinents" class="active">Continentes</button>
+                <button id="viewEurope">Europa</button>
+                <button id="viewAmerica">América</button>
+                <button id="viewAfrica">África</button>
+                <button id="viewAsia">Asia</button>
+                <button id="viewOceania">Oceanía</button>
+                <button id="viewTable">Tabla Completa</button>
+            </div>
+            <div class="filter-controls">
+                <select id="topFilter">
+                    <option value="all">Mostrar Todos</option>
+                    <option value="3">Top 3</option>
+                    <option value="5">Top 5</option>
+                    <option value="10">Top 10</option>
+                </select>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="immigrationChart"></canvas>
+        </div>
+        <div class="table-container" style="display: none;">
+            <input type="text" id="tableSearch" placeholder="Buscar país...">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>País</th>
+                        <th>Continente</th>
+                        <th>Inmigrantes</th>
+                        <th>Porcentaje</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
