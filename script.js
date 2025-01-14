@@ -221,106 +221,140 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to create or update chart
     function updateChart(viewType, topN = 'all') {
-        const chartContainer = document.querySelector('.chart-container');
-        const tableContainer = document.querySelector('.table-container');
-        
-        if (viewType === 'Tabla') {
-            chartContainer.style.display = 'none';
-            tableContainer.style.display = 'block';
-            updateTable();
-            return;
-        } else {
-            chartContainer.style.display = 'block';
-            tableContainer.style.display = 'none';
-        }
-
         const ctx = document.getElementById('immigrationChart').getContext('2d');
+        const data = selectedYear === 'total' ? countriesByContinent : yearlyData[selectedYear];
         
         if (currentChart) {
             currentChart.destroy();
         }
 
         let chartData;
+        let chartOptions;
+
         if (viewType === 'Continentes') {
-            const continentValues = ['Europa', 'África', 'América', 'Asia'].map(continent => {
-                const data = selectedYear === 'total' ? 
-                    countriesByContinent[continent] : 
-                    yearlyData[selectedYear][continent];
-                return data.values.reduce((a, b) => a + b, 0);
-            });
+            // Prepare data for continents view
+            const continentData = Object.entries(data).map(([continent, data]) => ({
+                continent,
+                value: data.values.reduce((a, b) => a + b, 0)
+            }));
 
-            const total = continentValues.reduce((a, b) => a + b, 0);
-            const percentages = continentValues.map(value => ((value / total) * 100).toFixed(1));
-
-            const labels = ['Europa', 'África', 'América', 'Asia'].map((continent, i) => 
-                `${continent} (${continentValues[i].toLocaleString()} - ${percentages[i]}%)`
-            );
-            
             chartData = {
-                labels: labels,
+                labels: continentData.map(d => d.continent),
                 datasets: [{
-                    data: continentValues,
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+                    data: continentData.map(d => d.value),
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF'
+                    ]
                 }]
+            };
+
+            chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
             };
 
             currentChart = new Chart(ctx, {
                 type: 'pie',
                 data: chartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: `Distribución por Continentes (Total: ${total.toLocaleString()})`,
-                            font: { size: 18 }
-                        }
-                    }
-                }
+                options: chartOptions
             });
         } else {
-            const continentData = selectedYear === 'total' ? 
-                countriesByContinent[viewType] : 
-                yearlyData[selectedYear][viewType];
-            const filteredData = getTopN(continentData, topN);
-            const total = filteredData.values.reduce((a, b) => a + b, 0);
-            const continentTotal = continentData.values.reduce((a, b) => a + b, 0);
-            const percentages = filteredData.values.map(value => ((value / continentTotal) * 100).toFixed(1));
-            const labels = filteredData.countries.map((country, i) => 
-                `${country} (${filteredData.values[i].toLocaleString()} - ${percentages[i]}%)`
-            );
+            // Prepare data for specific continent view
+            const continentData = data[viewType];
+            if (!continentData) return;
+
+            let countriesData = continentData.countries.map((country, index) => ({
+                country,
+                value: continentData.values[index]
+            }));
+
+            // Sort by value in descending order
+            countriesData.sort((a, b) => b.value - a.value);
+
+            // Apply top N filter if specified
+            if (topN !== 'all') {
+                countriesData = countriesData.slice(0, parseInt(topN));
+            }
 
             chartData = {
-                labels: labels,
+                labels: countriesData.map(d => d.country),
                 datasets: [{
-                    data: filteredData.values,
-                    backgroundColor: filteredData.countries.map(() => 
-                        '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')
-                    )
+                    data: countriesData.map(d => d.value),
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF',
+                        '#FF9F40',
+                        '#4BC0C0',
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56'
+                    ]
                 }]
+            };
+
+            chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
             };
 
             currentChart = new Chart(ctx, {
                 type: 'pie',
                 data: chartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: [
-                                `Distribución de Inmigrantes en ${viewType}`,
-                                selectedYear === 'total' ? '(Hasta Ahora)' : `(${selectedYear})`,
-                                `Total: ${continentTotal.toLocaleString()}`
-                            ].join(' '),
-                            font: { size: 18 }
-                        }
-                    }
-                }
+                options: chartOptions
             });
         }
+    }
+
+    let currentSort = {
+        column: null,
+        direction: null
+    };
+
+    // Function to sort table data
+    function sortTableData(tableData, sortColumn, sortDirection) {
+        return tableData.sort((a, b) => {
+            let aValue = a[sortColumn];
+            let bValue = b[sortColumn];
+            
+            // Convert to numbers for numeric columns
+            if (sortColumn === 'inmigrantes' || sortColumn === 'porcentaje') {
+                aValue = parseFloat(aValue);
+                bValue = parseFloat(bValue);
+            }
+            
+            if (sortDirection === 'asc') {
+                return aValue > bValue ? 1 : -1;
+            } else {
+                return aValue < bValue ? 1 : -1;
+            }
+        });
     }
 
     // Function to update table
@@ -331,73 +365,139 @@ document.addEventListener('DOMContentLoaded', function() {
         const total = Object.values(data).reduce((sum, continent) => 
             sum + continent.values.reduce((a, b) => a + b, 0), 0);
         
-        tbody.innerHTML = '';
-        
+        // Convert data to array format for easier sorting
+        let tableData = [];
         Object.entries(data).forEach(([continent, data]) => {
             data.countries.forEach((country, index) => {
                 if (country.toLowerCase().includes(searchTerm)) {
-                    const row = document.createElement('tr');
                     const value = data.values[index];
                     const percentage = ((value / total) * 100).toFixed(1);
-                    
-                    row.innerHTML = `
-                        <td>${continent}</td>
-                        <td>${country}</td>
-                        <td>${value.toLocaleString()}</td>
-                        <td>${percentage}%</td>
-                    `;
-                    tbody.appendChild(row);
+                    tableData.push({
+                        pais: country,
+                        continente: continent,
+                        inmigrantes: value,
+                        porcentaje: percentage
+                    });
                 }
             });
         });
+
+        // Apply sorting if active
+        if (currentSort.column) {
+            tableData = sortTableData(tableData, currentSort.column, currentSort.direction);
+        }
+
+        // Clear and rebuild table
+        tbody.innerHTML = '';
+        tableData.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row.pais}</td>
+                <td>${row.continente}</td>
+                <td>${row.inmigrantes.toLocaleString()}</td>
+                <td>${row.porcentaje}%</td>
+            `;
+            tbody.appendChild(tr);
+        });
     }
+
+    // Add event listeners for sorting
+    document.querySelectorAll('#dataTable th.sortable').forEach(headerCell => {
+        headerCell.addEventListener('click', () => {
+            const sortColumn = headerCell.dataset.sort;
+            const currentDirection = headerCell.dataset.sortDir || 'none';
+            
+            // Remove sort indicators from all headers
+            document.querySelectorAll('#dataTable th.sortable').forEach(th => {
+                th.removeAttribute('data-sort-dir');
+            });
+            
+            // Update sort state
+            if (currentDirection === 'none' || currentDirection === 'desc') {
+                headerCell.dataset.sortDir = 'asc';
+                currentSort = { column: sortColumn, direction: 'asc' };
+            } else {
+                headerCell.dataset.sortDir = 'desc';
+                currentSort = { column: sortColumn, direction: 'desc' };
+            }
+            
+            updateTable();
+        });
+    });
+
+    // Initialize view type buttons (tabs)
+    document.getElementById('chartView').addEventListener('click', () => {
+        document.getElementById('chartSection').style.display = 'block';
+        document.getElementById('tableSection').style.display = 'none';
+        document.getElementById('chartView').classList.add('active');
+        document.getElementById('tableView').classList.remove('active');
+    });
+
+    document.getElementById('tableView').addEventListener('click', () => {
+        document.getElementById('chartSection').style.display = 'none';
+        document.getElementById('tableSection').style.display = 'block';
+        document.getElementById('chartView').classList.remove('active');
+        document.getElementById('tableView').classList.add('active');
+    });
 
     // Initialize view buttons
     const viewButtons = document.querySelectorAll('.view-controls button');
     viewButtons.forEach(button => {
         button.addEventListener('click', () => {
-            viewButtons.forEach(b => b.classList.remove('active'));
+            viewButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            currentView = button.textContent;
-            updateChart(currentView, document.getElementById('topFilter').value);
+            
+            let viewType;
+            switch (button.id) {
+                case 'viewContinents':
+                    viewType = 'Continentes';
+                    break;
+                case 'viewEurope':
+                    viewType = 'Europa';
+                    break;
+                case 'viewAmerica':
+                    viewType = 'América';
+                    break;
+                case 'viewAfrica':
+                    viewType = 'África';
+                    break;
+                case 'viewAsia':
+                    viewType = 'Asia';
+                    break;
+                case 'viewOceania':
+                    viewType = 'Oceanía';
+                    break;
+            }
+            
+            currentView = viewType;
+            const topN = document.getElementById('topFilter').value;
+            updateChart(viewType, topN);
         });
     });
 
-    // Add year selector
-    const yearSelector = document.createElement('div');
-    yearSelector.className = 'year-controls';
-    yearSelector.innerHTML = `
-        <label for="year-select">Año:</label>
-        <select id="year-select">
-            <option value="total">Hasta Ahora</option>
-            ${Object.keys(yearlyData).reverse().map(year => 
-                `<option value="${year}">${year}</option>`
-            ).join('')}
-        </select>
-    `;
-    document.querySelector('.controls').appendChild(yearSelector);
-
-    // Year selection event listener
-    document.getElementById('year-select').addEventListener('change', function(e) {
+    // Initialize year selections
+    document.getElementById('yearSelect').addEventListener('change', (e) => {
         selectedYear = e.target.value;
+        document.getElementById('tableYearSelect').value = selectedYear;
         updateChart(currentView, document.getElementById('topFilter').value);
         updateTable();
     });
 
-    // Initialize filter
-    const topFilter = document.getElementById('topFilter');
-    topFilter.addEventListener('change', () => {
-        if (currentView !== 'Tabla Completa') {
-            updateChart(currentView, topFilter.value);
-        }
+    document.getElementById('tableYearSelect').addEventListener('change', (e) => {
+        selectedYear = e.target.value;
+        document.getElementById('yearSelect').value = selectedYear;
+        updateTable();
     });
 
-    // Initialize table search
-    const tableSearch = document.getElementById('tableSearch');
-    tableSearch.addEventListener('input', updateTable);
+    // Initialize filter control
+    document.getElementById('topFilter').addEventListener('change', (e) => {
+        updateChart(currentView, e.target.value);
+    });
 
-    // Initial chart
-    document.getElementById('year-select').value = 'total';
-    updateChart('Continentes');
+    // Initialize search functionality
+    document.getElementById('tableSearch').addEventListener('input', updateTable);
+
+    // Initial update
+    updateChart('Continentes', 'all');
     updateTable();
 });

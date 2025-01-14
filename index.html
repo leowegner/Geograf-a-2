@@ -10,41 +10,76 @@
 <body>
     <div class="container">
         <h1>Estadísticas de Inmigración</h1>
-        <div class="controls">
-            <div class="view-controls">
-                <button id="viewContinents" class="active">Continentes</button>
-                <button id="viewEurope">Europa</button>
-                <button id="viewAmerica">América</button>
-                <button id="viewAfrica">África</button>
-                <button id="viewAsia">Asia</button>
-                <button id="viewOceania">Oceanía</button>
-                <button id="viewTable">Tabla Completa</button>
+        <div class="view-type-controls">
+            <button id="chartView" class="view-type-btn active">Gráficos</button>
+            <button id="tableView" class="view-type-btn">Tabla</button>
+        </div>
+        <div id="chartSection" class="section-container">
+            <div class="controls">
+                <div class="view-controls">
+                    <button id="viewContinents" class="active">Continentes</button>
+                    <button id="viewEurope">Europa</button>
+                    <button id="viewAmerica">América</button>
+                    <button id="viewAfrica">África</button>
+                    <button id="viewAsia">Asia</button>
+                    <button id="viewOceania">Oceanía</button>
+                </div>
+                <div class="control-row">
+                    <div class="filter-controls">
+                        <select id="topFilter">
+                            <option value="all">Mostrar Todos</option>
+                            <option value="3">Top 3</option>
+                            <option value="5">Top 5</option>
+                            <option value="10">Top 10</option>
+                        </select>
+                    </div>
+                    <div class="year-controls">
+                        <select id="yearSelect">
+                            <option value="total">Hasta Ahora</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                            <option value="2019">2019</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div class="filter-controls">
-                <select id="topFilter">
-                    <option value="all">Mostrar Todos</option>
-                    <option value="3">Top 3</option>
-                    <option value="5">Top 5</option>
-                    <option value="10">Top 10</option>
-                </select>
+            <div class="chart-container">
+                <canvas id="immigrationChart"></canvas>
             </div>
         </div>
-        <div class="chart-container">
-            <canvas id="immigrationChart"></canvas>
-        </div>
-        <div class="table-container" style="display: none;">
-            <input type="text" id="tableSearch" placeholder="Buscar país...">
-            <table id="dataTable">
-                <thead>
-                    <tr>
-                        <th>País</th>
-                        <th>Continente</th>
-                        <th>Inmigrantes</th>
-                        <th>Porcentaje</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div id="tableSection" class="section-container" style="display: none;">
+            <div class="table-controls">
+                <div class="year-controls">
+                    <select id="tableYearSelect">
+                        <option value="total">Hasta Ahora</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                        <option value="2018">2018</option>
+                        <option value="2017">2017</option>
+                        <option value="2016">2016</option>
+                        <option value="2015">2015</option>
+                    </select>
+                </div>
+                <input type="text" id="tableSearch" placeholder="Buscar país...">
+            </div>
+            <div class="table-wrapper">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-sort="pais">País <span class="sort-icon">↕</span></th>
+                            <th class="sortable" data-sort="continente">Continente <span class="sort-icon">↕</span></th>
+                            <th class="sortable" data-sort="inmigrantes">Inmigrantes <span class="sort-icon">↕</span></th>
+                            <th class="sortable" data-sort="porcentaje">Porcentaje <span class="sort-icon">↕</span></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
